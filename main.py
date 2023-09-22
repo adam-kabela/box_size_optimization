@@ -7,15 +7,29 @@ adam kabela
 # The problem is NP-hard in general and NP-complete without rotations (so, all known optimal algorithms need super-polynomial runtime).
 # https://en.wikipedia.org/wiki/Rectangle_packing#Packing_different_rectangles_in_a_given_rectangle
 # https://erikdemaine.org/papers/Jigsaw_GC/paper.pdf
-# For a problem of packing rectangles, fast heuristic algorithms are well-studied and there are Python solutions.
-# For instance, see https://intranet.csc.liv.ac.uk/~epa/surveyhtml.html and https://pypi.org/project/rectangle-packer/
+#
+# For a problem of packing rectangles, heuristic algorithms are well-studied.
+# For instance, see https://intranet.csc.liv.ac.uk/~epa/surveyhtml.html 
+#
+# There are Python solutions, but they seem to not consider all rotations.
+# For instance, see https://pypi.org/project/rectpack/ and https://pypi.org/project/rectangle-packer/
+#
 # If using a fancy angorithm, make sure the solution is simple enough for practical use of the packing machine and warehouse staff.
+# Possibly provide descriptions / pictures of positioning the cards in the box.
 #
 # In this dataset, there are just small numbers of rectangles to pack, which makes the problem much easier.
-# For rotations by 90 degrees, we find all optimal solutions with a backtracking approach. For details, see best_containers.
+# Instead of packing into one given rectangle, we find all best rectangle containers.
+# Knowing all best containers, we can quickly evaluate loads of different box choices. 
+# For rotations by 90 degrees, we find all optimal solutions by backtracking. See optimal_orthogonal_packing.py.
+# For rotations by arbitrary angle, we find containers with a random heuristic. See heuristic_packing_with_all_rotations.py.
+#
+# This prototype is naive in handling rounding errors related to rotations and overlaps of rotated rectangles.
+# It possibly allows very tiny overlaps of rotated rectangles and compensates by slight enlargement of heuristic container. 
 
 from group_orders import *
 from suitable_boxes import *
+
+number_of_trials_for_random_heuristic = 1000
 
 def update_suitable_boxes(orders, box):
     orders['SuitableBox'] = orders.apply(lambda row: check_box_suitability(box, row.SuitableBox, row.BestContainers), axis=1)
@@ -27,11 +41,16 @@ def packable_orders_percentage(orders):
 def box_free_space_percentage(orders):
     orders_with_box = orders.dropna(subset=['SuitableBox']).copy()
     total_order_space = orders_with_box['TotalCardSpace'].sum()
-    orders_with_box['SuitableBoxSpace'] = orders_with_box.apply(lambda row: space(row.SuitableBox), axis=1)
+    orders_with_box['SuitableBoxSpace'] = orders_with_box.apply(lambda row: rectangle_space(row.SuitableBox), axis=1)
     total_box_space = orders_with_box['SuitableBoxSpace'].sum()
     total_free_space = total_box_space - total_order_space
     return total_free_space / total_box_space * 100
 
+def best_containers(cards):
+    orthogonal = best_orthogonal_containers(cards)
+    all_rotations = heuristic_rotation_containers(cards, number_of_trials_for_random_heuristic)
+    return keep_minimal(orthogonal + all_rotations)
+    
 def evaluate_box_choice(orders, boxes):
     for box in boxes:
         update_suitable_boxes(orders, box)
@@ -45,13 +64,11 @@ dataset = pandas.read_csv('data/hero_cards.csv', sep=';')
 #get_basic_idea(dataset) # get basic idea about the data, please comment out if not needed
 orders = prepare_data(dataset)
 
-orders['BestContainers'] = orders.apply(lambda row: best_containers_for_this_order(row.Cards), axis=1)
+orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards), axis=1)
 orders['SuitableBox'] = None
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
 evaluate_box_choice(orders, expert_judgement_boxes)
-
-#improve by rotation
 
 #logging
 #log time
