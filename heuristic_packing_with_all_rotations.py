@@ -33,8 +33,8 @@ def get_container(layout):
     
     left_most_point = min(x_coordinates)
     right_most_point = max(x_coordinates)
-    top_most_point = min(y_coordinates)
-    bottom_most_point = max(y_coordinates)
+    bottom_most_point = min(y_coordinates)
+    top_most_point = max(y_coordinates)
     
     container = (right_most_point - left_most_point + 0.1, top_most_point - bottom_most_point + 0.1) # a +0.1 buffer for rounding error
     return sorted(container, reverse=True)

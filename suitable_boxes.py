@@ -15,6 +15,3 @@ def order_fits_in_box(box, best_containers):
             # order fits in container and container fits in box, so order fits in box 
             return True
     return False
-    
-def get_all_suitable_box_candidates():
-    pass    

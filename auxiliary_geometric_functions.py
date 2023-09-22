@@ -26,6 +26,7 @@ def random_angle():
     
 def overlaps_ok(layout, new_piece):
     for piece in layout:
+        return False
         if pieces_share_interior_point(piece, new_piece):
             return False
     return True

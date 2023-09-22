@@ -29,7 +29,7 @@ adam kabela
 from group_orders import *
 from suitable_boxes import *
 
-number_of_trials_for_random_heuristic = 1000
+number_of_trials_for_random_heuristic = 100
 
 def update_suitable_boxes(orders, box):
     orders['SuitableBox'] = orders.apply(lambda row: check_box_suitability(box, row.SuitableBox, row.BestContainers), axis=1)
@@ -39,7 +39,8 @@ def packable_orders_percentage(orders):
     return number_of_orders_with_box / len(orders) * 100
     
 def box_free_space_percentage(orders):
-    orders_with_box = orders.dropna(subset=['SuitableBox']).copy()
+    orders_with_box = orders.copy(deep=True)
+    orders_with_box = orders_with_box.dropna(subset=['SuitableBox'])
     total_order_space = orders_with_box['TotalCardSpace'].sum()
     orders_with_box['SuitableBoxSpace'] = orders_with_box.apply(lambda row: rectangle_space(row.SuitableBox), axis=1)
     total_box_space = orders_with_box['SuitableBoxSpace'].sum()
@@ -52,30 +53,33 @@ def best_containers(cards):
     return keep_minimal(orthogonal + all_rotations)
     
 def evaluate_box_choice(orders, boxes):
+    evaluation = orders.copy(deep=True)
+    evaluation['SuitableBox'] = None
     for box in boxes:
-        update_suitable_boxes(orders, box)
+        update_suitable_boxes(evaluation, box)
     print("\n For boxes:", boxes)
-    print(round(packable_orders_percentage(orders),2), "% of orders can be packed.")
-    print(round(box_free_space_percentage(orders),2), "% of box space is free.")
+    print(round(packable_orders_percentage(evaluation),2), "% of orders can be packed.")
+    print(round(box_free_space_percentage(evaluation),2), "% of box space is free.")
 
 # run #########################################################################
 
 dataset = pandas.read_csv('data/hero_cards.csv', sep=';')
 #get_basic_idea(dataset) # get basic idea about the data, please comment out if not needed
 orders = prepare_data(dataset)
-
 orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards), axis=1)
-orders['SuitableBox'] = None
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
 evaluate_box_choice(orders, expert_judgement_boxes)
+
+#test data
+#test
 
 #logging
 #log time
 
 #hero task
 #intuitively larger box affects packability, smaller affects free space 
-# check boxes by combinations of sizes of best boxes
+#check boxes by combinations of sizes of best boxes
 
 #to csv
 #plot
