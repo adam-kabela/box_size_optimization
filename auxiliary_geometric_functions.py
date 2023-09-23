@@ -2,12 +2,6 @@ import math
 import random
 #maybe import and use shapely, but it needs installing
 
-def random_touch_point(layout):
-    if len(layout) == 0:
-        return (0,0)
-    touching_piece = random.choice(layout)
-    return perimeter_random_point(touching_piece)
-
 def perimeter_random_point(piece):
     rectangle = piece[0]
     position = piece[1]
@@ -22,8 +16,7 @@ def choose_point(rectangle):
     return random.choice([(x*r,0), (x*r,y), (0,y*r), (x,y*r)])
 
 def random_angle():
-    return 45
-    #return random.randint(0, 360)
+    return random.randint(0, 360)
     
 def overlaps_ok(layout, new_piece):
     for piece in layout:
@@ -45,7 +38,7 @@ def some_edges_intersect(p1, p2):
     for f in get_edges(p1):
         for s in get_edges(p2):
             if line_segments_share_interior_point(f, s):
-                print("Edges", f, "and", s, "share interior point")
+                #print("Edges", f, "and", s, "share interior point")
                 return True
     return False
 
@@ -65,7 +58,7 @@ def has_centre_inside(p1, p2):
         return False
     if relative_position_of_centre[1] >= first_rectangle[1]:
         return False
-    print("Piece", p2, "has centre inside piece", p1)
+    #print("Piece", p2, "has centre inside piece", p1)
     return True
 
 # See https://www.geeksforgeeks.org/orientation-3-ordered-points/amp/   

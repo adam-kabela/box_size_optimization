@@ -26,67 +26,44 @@ adam kabela
 # This prototype is naive in handling rounding errors related to rotations and overlaps of rotated rectangles.
 # It possibly allows very tiny overlaps of rotated rectangles and compensates by slight enlargement of heuristic container. 
 
-from group_orders import *
 from suitable_boxes import *
 
-number_of_trials_for_random_heuristic = 100
+# settings ####################################################################
 data = 'data/hero_cards.csv'
-#data = 'test_data.csv'
+#data = 'test_data/test1.csv'
+#data = 'test_data/test2.csv'
+#data = 'test_data/test3.csv'
 
-def update_suitable_boxes(orders, box):
-    orders['SuitableBox'] = orders.apply(lambda row: check_box_suitability(box, row.SuitableBox, row.BestContainers), axis=1)
-
-def packable_orders_percentage(orders):
-    number_of_orders_with_box = orders['SuitableBox'].count() #counts values which are not None
-    return number_of_orders_with_box / len(orders) * 100
-    
-def box_free_space_percentage(orders):
-    orders_with_box = orders.copy(deep=True)
-    orders_with_box = orders_with_box.dropna(subset=['SuitableBox'])
-    if len(orders_with_box) == 0:
-        return 100
-    total_order_space = orders_with_box['TotalCardSpace'].sum()
-    orders_with_box['SuitableBoxSpace'] = orders_with_box.apply(lambda row: rectangle_space(row.SuitableBox), axis=1)
-    total_box_space = orders_with_box['SuitableBoxSpace'].sum()
-    total_free_space = total_box_space - total_order_space
-    return total_free_space / total_box_space * 100
-
-def best_containers(cards):
-    orthogonal = best_orthogonal_containers(cards)
-    all_rotations = heuristic_rotation_containers(cards, number_of_trials_for_random_heuristic)
-    return keep_minimal(orthogonal + all_rotations)
-    
-def evaluate_box_choice(orders, boxes):
-    evaluation = orders.copy(deep=True)
-    evaluation['SuitableBox'] = None
-    for box in boxes:
-        update_suitable_boxes(evaluation, box)
-    print("\n For boxes:", boxes)
-    print(round(packable_orders_percentage(evaluation),2), "% of orders can be packed.")
-    print(round(box_free_space_percentage(evaluation),2), "% of box space is free.")
+expert_judgement_boxes = [(250, 150), (100, 100)]
+trials = 1000 # number of trials for random heuristic
 
 # run #########################################################################
-
 dataset = pandas.read_csv(data, sep=';')
 #get_basic_idea(dataset) # get basic idea about the data, please comment out if not needed
 orders = prepare_data(dataset)
-orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards), axis=1)
 
-#expert_judgement_boxes = [(250, 150), (100, 100)]
-expert_judgement_boxes = [(100, 100)]
+#combine best orthogonal containers and heuristic containers for all rotations
+orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards, trials), axis=1)
+
 evaluate_box_choice(orders, expert_judgement_boxes)
 
-#test data (single order)
-#test, calculate outputs
-
-#logging
-#log time
-
+"""
+for x in range(5, 305, 5):
+    for y in range(5, 305, 5):
+        boxes = [(x,y)]
+        evaluate_box_choice(orders, boxes)
+"""
 #hero task
 #intuitively larger box affects packability, smaller affects free space 
 #check boxes by combinations of sizes of best boxes
 #output to csv
 #output layout
+
+#logging
+#log time
+
+#smart angles
+#smart grid
 
 #plot evaluation
 #plot layout

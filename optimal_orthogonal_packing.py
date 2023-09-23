@@ -25,8 +25,7 @@ def backtracking_recurrence(layout, remaining_rectangles, grid_lines):
         return [sorted(container, reverse=True)]
     possible_containers = []
     for rectangle in remaining_rectangles:
-        for rotation in [0,90]:
-            r = orthogonal_rotation(rectangle, rotation)
+        for r in [rectangle, orthogonal_rotation(rectangle)]:
             for p in possible_positions(grid_lines):
                 if orthogonal_overlaps_ok(layout, r, p):
                     new_layout = layout + [[r, p]]
