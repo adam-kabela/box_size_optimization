@@ -3,6 +3,7 @@ from auxiliary_geometric_functions import *
 def heuristic_rotation_containers(cards, trials):
     containers = []
     for i in range(trials):
+        print("\n Trial", i+1)
         layout = heuristic_positioning(cards)
         if layout is not None:
             container = get_container(layout)
@@ -17,6 +18,7 @@ def heuristic_positioning(cards):
         position = random_touch_point(layout)
         rotation = random_angle()
         new_piece = [rectangle, position, rotation]
+        print("Rectangle", rectangle, "at", position, "rotated by", rotation)
         if overlaps_ok(layout, new_piece) == False:
             return None
         layout.append(new_piece)

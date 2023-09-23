@@ -22,11 +22,11 @@ def choose_point(rectangle):
     return random.choice([(x*r,0), (x*r,y), (0,y*r), (x,y*r)])
 
 def random_angle():
-    return random.randint(0, 360)
+    return 45
+    #return random.randint(0, 360)
     
 def overlaps_ok(layout, new_piece):
     for piece in layout:
-        return False
         if pieces_share_interior_point(piece, new_piece):
             return False
     return True
@@ -45,6 +45,7 @@ def some_edges_intersect(p1, p2):
     for f in get_edges(p1):
         for s in get_edges(p2):
             if line_segments_share_interior_point(f, s):
+                print("Edges", f, "and", s, "share interior point")
                 return True
     return False
 
@@ -56,14 +57,15 @@ def has_centre_inside(p1, p2):
     relative_position_of_centre = get_point_coordinates(centre, relative_rotation, relative_position)
     # check if centre of p2 is inside p1 
     first_rectangle = p1[0]
-    if centre[0] < 0:
+    if relative_position_of_centre[0] <= 0:
         return False
-    if centre[0] > first_rectangle[0]:
+    if relative_position_of_centre[0] >= first_rectangle[0]:
         return False
-    if centre[1] < 0:
+    if relative_position_of_centre[1] <= 0:
         return False
-    if centre[0] > first_rectangle[1]:
+    if relative_position_of_centre[1] >= first_rectangle[1]:
         return False
+    print("Piece", p2, "has centre inside piece", p1)
     return True
 
 # See https://www.geeksforgeeks.org/orientation-3-ordered-points/amp/   
@@ -117,4 +119,3 @@ def rotate_point(point, angle):
     x = c * point[0] - s * point[1]
     y = s * point[0] + c * point[1]
     return (x, y)
-

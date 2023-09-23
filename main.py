@@ -30,6 +30,8 @@ from group_orders import *
 from suitable_boxes import *
 
 number_of_trials_for_random_heuristic = 100
+data = 'data/hero_cards.csv'
+#data = 'test_data.csv'
 
 def update_suitable_boxes(orders, box):
     orders['SuitableBox'] = orders.apply(lambda row: check_box_suitability(box, row.SuitableBox, row.BestContainers), axis=1)
@@ -41,6 +43,8 @@ def packable_orders_percentage(orders):
 def box_free_space_percentage(orders):
     orders_with_box = orders.copy(deep=True)
     orders_with_box = orders_with_box.dropna(subset=['SuitableBox'])
+    if len(orders_with_box) == 0:
+        return 100
     total_order_space = orders_with_box['TotalCardSpace'].sum()
     orders_with_box['SuitableBoxSpace'] = orders_with_box.apply(lambda row: rectangle_space(row.SuitableBox), axis=1)
     total_box_space = orders_with_box['SuitableBoxSpace'].sum()
@@ -63,16 +67,17 @@ def evaluate_box_choice(orders, boxes):
 
 # run #########################################################################
 
-dataset = pandas.read_csv('data/hero_cards.csv', sep=';')
+dataset = pandas.read_csv(data, sep=';')
 #get_basic_idea(dataset) # get basic idea about the data, please comment out if not needed
 orders = prepare_data(dataset)
 orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards), axis=1)
 
-expert_judgement_boxes = [(250, 150), (100, 100)]
+#expert_judgement_boxes = [(250, 150), (100, 100)]
+expert_judgement_boxes = [(100, 100)]
 evaluate_box_choice(orders, expert_judgement_boxes)
 
-#test data
-#test
+#test data (single order)
+#test, calculate outputs
 
 #logging
 #log time
@@ -80,6 +85,8 @@ evaluate_box_choice(orders, expert_judgement_boxes)
 #hero task
 #intuitively larger box affects packability, smaller affects free space 
 #check boxes by combinations of sizes of best boxes
+#output to csv
+#output layout
 
-#to csv
-#plot
+#plot evaluation
+#plot layout
