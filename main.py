@@ -92,7 +92,7 @@ caption = 'Percentages of free box space over all packed orders for boxes that c
 output_file = 'larger_boxes_evaluated_free_space'
 output_and_visualize(free_space_percentages_for_good_boxes, available_box_sizes, available_box_sizes, 'gray', caption, output_file)
 
-"""
+
 all_possible_boxes = []
 for i in range(matrix_size):
     for j in range(i+1):
@@ -101,23 +101,24 @@ for i in range(matrix_size):
 best_boxes = []
 best_boxes_pack = 0
 best_boxes_free_space = 100
-for i in range(200, len(all_possible_boxes)):
+for i in range(len(all_possible_boxes)):
     for j in range(i):
         larger_box = all_possible_boxes[i]
-        smaller_box = all_possible_boxes[j]
-        boxes = [larger_box, smaller_box]
-        evaluation = evaluate_box_choice(best_containers_and_layouts, boxes)
-        orders_packed = packable_orders_percentage(evaluation)
-        if orders_packed >= (60 + 5): #buffer
-            free_space = box_free_space_percentage(evaluation)    
-            if free_space < best_boxes_free_space:
-                best_boxes = boxes
-                best_boxes_pack = orders_packed
-                best_boxes_free_space = free_space
+        if larger_box[0] == 250 and larger_box[1] == 150:
+            smaller_box = all_possible_boxes[j]
+            boxes = [larger_box, smaller_box]
+            evaluation = evaluate_box_choice(best_containers_and_layouts, boxes)
+            orders_packed = packable_orders_percentage(evaluation)
+            if orders_packed >= (60 + 5): #buffer
+                free_space = box_free_space_percentage(evaluation)    
+                if free_space < best_boxes_free_space:
+                    best_boxes = boxes
+                    best_boxes_pack = orders_packed
+                    best_boxes_free_space = free_space
     print(i, "of", len(all_possible_boxes), best_boxes, best_boxes_pack, best_boxes_free_space)
 
 print("Result:", best_boxes, best_boxes_pack, best_boxes_free_space)        
-"""
+
     
 #superhero hero task
 #check all pairs of boxes 
