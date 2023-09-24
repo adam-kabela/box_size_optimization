@@ -1,6 +1,6 @@
 from optimal_orthogonal_packing import *
 from heuristic_packing_with_all_rotations import *
-from group_orders import *
+from output_visualisation import *
 #from visualisation import *
 
 # containers ##################################################################
@@ -45,7 +45,6 @@ def evaluate_box_choice(best_containers_and_layouts, boxes):
     # change column order for the output csv
     evaluation = evaluation[['OrderId','Cards','SuitableBox','TotalCardSpace','SuitableBoxSpace','BestContainers', 'Layouts']]		
     return evaluation
-
 
 def output_evaluation_metrics(evaluation, boxes):
     print("\n For boxes:", boxes)

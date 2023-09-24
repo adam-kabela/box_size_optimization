@@ -35,9 +35,8 @@ data = 'data/hero_cards.csv'
 #data = 'test_data/test3.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
-box_size_range = list(range(0, 301))
-box_size_increment = 5
-trials = 10 # number of trials for random heuristic
+available_box_sizes = list(range(0, 351, 10))
+trials = 1 # number of trials for random heuristic
 
 # run #########################################################################
 dataset = pandas.read_csv(data, sep=';')
@@ -50,25 +49,26 @@ best_containers_and_layouts = prepare_best_containers(orders, trials)
 #evaluate expert judgement boxes
 evaluation = evaluate_box_choice(best_containers_and_layouts, expert_judgement_boxes)
 output_evaluation_metrics(evaluation, expert_judgement_boxes)
-evaluation.to_csv('results/expert_judgement_boxes/evaluation_data.csv')
+evaluation.to_csv('results/expert_judgement_boxes_evaluation_data.csv', sep=';')
 
 #also evaluate individual boxes from expert judgement boxes
 for box in expert_judgement_boxes:
     evaluation = evaluate_box_choice(best_containers_and_layouts, [box])
     output_evaluation_metrics(evaluation, [box])
 
-#to file
-#swap columns
-#commit
+#message time check file
 
-"""
-packable_percentages
-use pandas to have header?
-for x in range(0, 301, 1):
-    for y in range(5, 305, 5):
-        boxes = [(x,y)]
-        packable_percentages[x][y] = evaluate_box_choice(orders, boxes)
-"""
+matrix_size = len(available_box_sizes)
+orders_packed_percentages = numpy.zeros((matrix_size, matrix_size))
+for i in range(matrix_size):
+    for j in range(matrix_size):
+        box = (available_box_sizes[i], available_box_sizes[j])
+        evaluation = evaluate_box_choice(best_containers_and_layouts, [box])
+        orders_packed_percentages[i][j] = packable_orders_percentage(evaluation)
+        
+caption = 'Percentages of packed orders for boxes of all lengths and widths'
+output_file = 'all_boxes_evaluated'
+output_and_wisualize(orders_packed_percentages, available_box_sizes, available_box_sizes, 'RdYlGn', caption, output_file)
 
 #hero task
 #intuitively larger box affects packability, smaller affects free space 
