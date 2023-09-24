@@ -1,17 +1,21 @@
 from optimal_orthogonal_packing import *
 from heuristic_packing_with_all_rotations import *
 from group_orders import *
+#from visualisation import *
 
 # containers ##################################################################
 def best_containers(cards, trials):
     orthogonal = best_orthogonal_containers(cards)
     all_rotations = heuristic_rotation_containers(cards, trials)
-    return keep_minimal(orthogonal + all_rotations)
+    best = keep_minimal(orthogonal + all_rotations)
+    best_containers = [x[0] for x in best]
+    layouts = [x[1] for x in best]
+    return [best_containers, layouts]
 
 # boxes #######################################################################
 def update_suitable_boxes(orders, box):
     orders['SuitableBox'] = orders.apply(lambda row: check_box_suitability(box, row.SuitableBox, row.BestContainers), axis=1)
-
+    
 def check_box_suitability(box, known_suitable_box, best_containers):
     if order_fits_in_box(box, best_containers) == False:
         return known_suitable_box
@@ -33,6 +37,7 @@ def evaluate_box_choice(orders, boxes):
     evaluation['SuitableBox'] = None
     for box in boxes:
         update_suitable_boxes(evaluation, box)
+    evaluation.to_csv('data/container_and_box_data.csv')
     print("\n For boxes:", boxes)
     print(round(packable_orders_percentage(evaluation),2), "% of orders can be packed.")
     print(round(box_free_space_percentage(evaluation),2), "% of box space is free.")

@@ -1,14 +1,14 @@
 from auxiliary_geometric_functions import *
 
 def heuristic_rotation_containers(cards, trials):
-    containers = []
+    output = []
     for i in range(trials):
         #print("\n Trial", i+1)
         layout = heuristic_positioning(cards)
         if layout is not None:
             container = get_container(layout)
-            containers.append(container)
-    return containers
+            output.append([container, layout])
+    return output
         
 def heuristic_positioning(cards):
     remaining_rectangles = cards.copy()

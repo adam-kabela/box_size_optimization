@@ -22,31 +22,34 @@ def backtracking_recurrence(layout, remaining_rectangles, grid_lines):
     if len(remaining_rectangles) == 0:
         container = [max(grid_lines[0]), max(grid_lines[1])]
         #log
-        return [sorted(container, reverse=True)]
-    possible_containers = []
+        return [[sorted(container, reverse=True), layout]]
+    containers_and_layouts = []
     for rectangle in remaining_rectangles:
         for r in [rectangle, orthogonal_rotation(rectangle)]:
             for p in possible_positions(grid_lines):
                 if orthogonal_overlaps_ok(layout, r, p):
-                    new_layout = layout + [[r, p]]
+                    new_layout = layout + [[r, p, 0]]
                     new_grid_lines = [grid_lines[0] + [p[0] + r[0]], grid_lines[1] + [p[1] + r[1]]]
                     new_remaining_rectangles = remaining_rectangles + []
                     new_remaining_rectangles.remove(rectangle)
-                    possible_containers = possible_containers + backtracking_recurrence(new_layout, new_remaining_rectangles, new_grid_lines)
-    return keep_minimal(possible_containers)
+                    containers_and_layouts += backtracking_recurrence(new_layout, new_remaining_rectangles, new_grid_lines)
+    return keep_minimal(containers_and_layouts)
 
-def keep_minimal(possible_containers):
-    best_containers = []
-    possible_containers.sort(key = lambda x: (x[0], x[1])) #sort by width and if tie use length
-    for p in possible_containers: #sorted from smallest
+def keep_minimal(containers_and_layouts):
+    output = []
+    #sort by container width and if tie use length
+    containers_and_layouts.sort(key = lambda x: (x[0][0], x[0][1])) 
+    for p in containers_and_layouts: #sorted from smallest
         is_best = True    
-        for b in best_containers:
-            if b[0] <= p[0] and b[1] <= p[1]:
+        for b in output:
+            p_container = p[0]
+            b_container = b[0]
+            if b_container[0] <= p_container[0] and b_container[1] <= p_container[1]:
                 is_best = False
                 break
         if is_best:
-            best_containers.append(p)
-    return best_containers
+            output.append(p)
+    return output
 
 def possible_positions(grid_lines):
     output = []

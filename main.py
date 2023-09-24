@@ -35,7 +35,7 @@ data = 'data/hero_cards.csv'
 #data = 'test_data/test3.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
-trials = 1000 # number of trials for random heuristic
+trials = 100 # number of trials for random heuristic
 
 # run #########################################################################
 dataset = pandas.read_csv(data, sep=';')
@@ -43,20 +43,25 @@ dataset = pandas.read_csv(data, sep=';')
 orders = prepare_data(dataset)
 
 #combine best orthogonal containers and heuristic containers for all rotations
-orders['BestContainers'] = orders.apply(lambda row: best_containers(row.Cards, trials), axis=1)
+orders['BestContainersAndLayouts'] = orders.apply(lambda row: best_containers(row.Cards, trials), axis=1)
+orders[['BestContainers', 'Layouts']] = orders['BestContainersAndLayouts'].apply(pandas.Series)
 
 evaluate_box_choice(orders, expert_judgement_boxes)
 
 """
-for x in range(5, 305, 5):
+packable_percentages
+use pandas to have header?
+for x in range(0, 301, 1):
     for y in range(5, 305, 5):
         boxes = [(x,y)]
-        evaluate_box_choice(orders, boxes)
+        packable_percentages[x][y] = evaluate_box_choice(orders, boxes)
 """
+
 #hero task
 #intuitively larger box affects packability, smaller affects free space 
 #check boxes by combinations of sizes of best boxes
 #output to csv
+
 #output layout
 
 #logging
