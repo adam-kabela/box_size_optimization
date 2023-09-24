@@ -35,8 +35,9 @@ data = 'data/hero_cards.csv'
 #data = 'test_data/test3.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
+better_performance_boxes = [(250, 150), (200, 100)]
 available_box_sizes = list(range(0, 351, 10))
-trials = 500 # number of trials for random heuristic
+trials = 1000 # number of trials for random heuristic
 
 # run #########################################################################
 dataset = pandas.read_csv(data, sep=';')
@@ -56,6 +57,9 @@ evaluation.to_csv('evaluations/data_used_for_evaluation/expert_judgement_boxes_e
 for box in expert_judgement_boxes:
     evaluation = evaluate_box_choice(best_containers_and_layouts, [box])
     output_evaluation_metrics(evaluation, [box])
+
+evaluation = evaluate_box_choice(best_containers_and_layouts, better_performance_boxes)
+output_evaluation_metrics(evaluation, better_performance_boxes)
 
 # expert judgement boxes contain one larger box and one slammer box, it seems like a reasonable strategy
 # intuitively larger box affects packability, smaller box improves free space percentage 
