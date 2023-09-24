@@ -28,6 +28,8 @@ def rectangle_envelopes_rectangle(inner_rectangle, outer_rectangle):
     return True
 
 def rectangle_space(rectangle):
+    if rectangle is None:
+        return None
     return rectangle[0]*rectangle[1] 
 
 def orthogonal_rotation(rectangle):

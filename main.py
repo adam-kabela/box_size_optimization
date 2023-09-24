@@ -35,7 +35,9 @@ data = 'data/hero_cards.csv'
 #data = 'test_data/test3.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
-trials = 100 # number of trials for random heuristic
+box_size_range = list(range(0, 301))
+box_size_increment = 5
+trials = 10 # number of trials for random heuristic
 
 # run #########################################################################
 dataset = pandas.read_csv(data, sep=';')
@@ -43,10 +45,21 @@ dataset = pandas.read_csv(data, sep=';')
 orders = prepare_data(dataset)
 
 #combine best orthogonal containers and heuristic containers for all rotations
-orders['BestContainersAndLayouts'] = orders.apply(lambda row: best_containers(row.Cards, trials), axis=1)
-orders[['BestContainers', 'Layouts']] = orders['BestContainersAndLayouts'].apply(pandas.Series)
+best_containers_and_layouts = prepare_best_containers(orders, trials)
 
-evaluate_box_choice(orders, expert_judgement_boxes)
+#evaluate expert judgement boxes
+evaluation = evaluate_box_choice(best_containers_and_layouts, expert_judgement_boxes)
+output_evaluation_metrics(evaluation, expert_judgement_boxes)
+evaluation.to_csv('results/expert_judgement_boxes/evaluation_data.csv')
+
+#also evaluate individual boxes from expert judgement boxes
+for box in expert_judgement_boxes:
+    evaluation = evaluate_box_choice(best_containers_and_layouts, [box])
+    output_evaluation_metrics(evaluation, [box])
+
+#to file
+#swap columns
+#commit
 
 """
 packable_percentages
@@ -62,13 +75,11 @@ for x in range(0, 301, 1):
 #check boxes by combinations of sizes of best boxes
 #output to csv
 
-#output layout
+#output used layout
+#plot layout
 
 #logging
 #log time
 
 #smart angles
 #smart grid
-
-#plot evaluation
-#plot layout
