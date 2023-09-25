@@ -33,6 +33,7 @@ from suitable_boxes import *
 #data = 'test_data/test1.csv'
 data = 'test_data/test2.csv'
 #data = 'test_data/test3.csv'
+#data = 'test_data/test4.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
 better_performance_boxes = [(250, 150), (210, 100)]
