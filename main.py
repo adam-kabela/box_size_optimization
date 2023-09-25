@@ -29,17 +29,18 @@ adam kabela
 from suitable_boxes import *
 
 # settings ####################################################################
-#data = 'data/hero_cards.csv'
+data = 'data/hero_cards.csv'
 #data = 'test_data/test1.csv'
-data = 'test_data/test2.csv'
+#data = 'test_data/test2.csv'
 #data = 'test_data/test3.csv'
 #data = 'test_data/test4.csv'
+#data = 'test_data/test5.csv'
 
 expert_judgement_boxes = [(250, 150), (100, 100)]
 better_performance_boxes = [(250, 150), (210, 100)]
 available_box_sizes = list(range(0, 351, 10))
-#trials = 10_000 # number of trials for random heuristic
-trials = 100_000 # number of trials for random heuristic
+#trials = 1 # number of trials for random heuristic
+trials = 10_000 # number of trials for random heuristic
 
 # run #########################################################################
 dataset = pandas.read_csv(data, sep=';')
@@ -63,6 +64,7 @@ for box in expert_judgement_boxes:
 # evaluate better performance boxes
 evaluation = evaluate_box_choice(best_containers_and_layouts, better_performance_boxes)
 output_evaluation_metrics(evaluation, better_performance_boxes)
+
 
 # expert judgement boxes contain one larger box and one slammer box, it seems like a reasonable strategy
 # intuitively larger box affects packability, smaller box improves free space percentage 
@@ -95,6 +97,8 @@ caption = 'Percentages of free box space over all packed orders for boxes that c
 output_file = 'larger_boxes_evaluated_free_space'
 output_and_visualize(free_space_percentages_for_good_boxes, available_box_sizes, available_box_sizes, 'gray', caption, output_file)
 
+
+"""
 print("Searching for best outperforming box pair featuring the box of type (250,150).")
 all_possible_boxes = []
 for i in range(matrix_size):
@@ -119,6 +123,7 @@ for i in range(len(all_possible_boxes)):
                     best_boxes_pack = orders_packed
                     best_boxes_free_space = free_space
 print(best_boxes, best_boxes_pack, best_boxes_free_space)        
+"""
     
 #superhero hero task
 #check all pairs of boxes 

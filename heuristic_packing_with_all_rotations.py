@@ -20,7 +20,7 @@ def heuristic_positioning(cards):
             touching_piece = random.choice(layout)
             touch_point = perimeter_random_point(touching_piece)
             touching_piece_rotation = touching_piece[2]
-            if random.randint(0, 100) >= 100: #try to align with the touching piece 
+            if random.randint(0, 100) >= 20: #try to align with the touching piece 
                 angle = touching_piece_rotation + (90 * random.randint(0, 3))
                 # make a smart choice of randint(0, 3) based on touching piece edge
             else:
