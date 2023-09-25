@@ -38,10 +38,10 @@ def heuristic_positioning(cards):
             return None
         layout.append(new_piece)
         remaining_rectangles.remove(rectangle)
-    return layout
+    return shift_layout_to_zero(layout)
 
-# use that furthest points of the layout are corners of rectangles
-def get_container(layout):
+# use that furthest points of the layout are corners of rectangles    
+def get_furthest_points(layout):
     corners = []
     for piece in layout:
         corners += get_corners(piece)
@@ -53,8 +53,25 @@ def get_container(layout):
     bottom_most_point = min(y_coordinates)
     top_most_point = max(y_coordinates)
     
+    return [left_most_point, right_most_point, bottom_most_point, top_most_point]
+
+def shift_layout_to_zero(layout):
+    output = []
+    furthest_points = get_furthest_points(layout)
+    left_most_point = furthest_points[0]
+    bottom_most_point = furthest_points[2]
+    for piece in layout:
+        new_position = (piece[1][0] - left_most_point, piece[1][1] - bottom_most_point)
+        output.append([piece[0], new_position, piece[2]])
+    return output
+
+def get_container(layout):
+    #layout is already shifted to zero
+    furthest_points = get_furthest_points(layout)
+    right_most_point = furthest_points[1]
+    top_most_point = furthest_points[3]
     # +0.1 buffer for rotation and overlap rounding error
-    x = round(right_most_point - left_most_point + 0.1, 2) 
-    y = round(top_most_point - bottom_most_point + 0.1, 2) 
+    x = round(right_most_point + 0.1, 2) 
+    y = round(top_most_point + 0.1, 2) 
     container = (x, y)  
     return sorted(container, reverse=True)

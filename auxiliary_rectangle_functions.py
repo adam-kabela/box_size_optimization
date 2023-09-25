@@ -2,6 +2,9 @@ def orthogonal_overlaps_ok(layout, new_rectangle, new_position):
     for piece in layout:
         rectangle = piece[0]
         position = piece[1]
+        rotation = piece[2]
+        if rotation == 90:
+            rectangle = orthogonal_rotation(rectangle)
         if orthogonal_share_interior_point(rectangle, position, new_rectangle, new_position):
             return False
     return True

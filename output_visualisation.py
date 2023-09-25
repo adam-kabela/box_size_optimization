@@ -14,7 +14,6 @@ def output_and_visualize(matrix, column_names, row_names, color_scheme, caption,
     styler.applymap(lambda x: 'color: transparent' if pandas.isnull(x) else '')
     styler.applymap(lambda x: 'background-color: white' if pandas.isnull(x) else '')
     styler.set_caption(caption)
-    #styler.applymap(lambda x: 'color: transparent' if pandas.isnull(x) else '')
     #apply(highlight_max) #this could be nice
     
     html = styler.to_html()
