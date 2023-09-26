@@ -97,7 +97,6 @@ caption = 'Percentages of free box space over all packed orders for boxes that c
 output_file = 'larger_boxes_evaluated_free_space'
 output_and_visualize(free_space_percentages_for_good_boxes, available_box_sizes, available_box_sizes, 'gray', caption, output_file)
 
-
 """
 print("Searching for best outperforming box pair featuring the box of type (250,150).")
 all_possible_boxes = []
@@ -129,7 +128,6 @@ print(best_boxes, best_boxes_pack, best_boxes_free_space)
 #check all pairs of boxes 
 #dataframe all pairs > 60, sort by free sapce
 
-#output used layout for each order and suitable box
 #plot layout of items in the box
 
 #add logging
